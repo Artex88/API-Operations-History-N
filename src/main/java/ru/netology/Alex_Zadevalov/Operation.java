@@ -16,6 +16,12 @@ public class Operation implements ConsolePrintable {
         this.merchant = merchant;
     }
 
+    public Operation(int sum, String currency, String merchant) {
+        this.sum = sum;
+        this.currency = currency;
+        this.merchant = merchant;
+    }
+
     public Operation() {
     }
     public void printToConsole(){

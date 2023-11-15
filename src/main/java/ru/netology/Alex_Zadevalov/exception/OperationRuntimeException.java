@@ -1,4 +1,4 @@
-package ru.netology.Alex_Zadevalov;
+package ru.netology.Alex_Zadevalov.exception;
 
 public class OperationRuntimeException  extends RuntimeException{
 }
