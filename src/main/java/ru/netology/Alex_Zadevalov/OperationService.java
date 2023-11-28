@@ -1,6 +1,9 @@
 package ru.netology.Alex_Zadevalov;
 
-import java.util.Scanner;
+import java.util.List;
+import java.util.Map;
+
+import static ru.netology.Alex_Zadevalov.StorageService.MAX_OPERATION;
 
 public class OperationService {
 
@@ -12,50 +15,26 @@ public class OperationService {
         return customerOperations;
     }
 
-    public static void inputOperation(StorageService<Operation> operations, int MAX_OPERATION, StorageService<Customer> customers,int[] customer_operations_count, int MAX_CUSTOMERS, int[][] statement) {
-        Scanner scanner = new Scanner(System.in);
+    public static void inputOperations(List<Map.Entry<Integer, Operation>> list, StorageService<Operation> operations, StorageService<Customer> customers, int[] customer_operations_count, int[][] statement) {
         int operationId = 0;
-        while (true) {
-            int sum = 0;
-            System.out.println("Sum: ");
-            try {
-                sum = scanner.nextInt();
-            } catch (Exception e) {
-                System.out.println("Sum not a number.");
-                scanner.nextLine();
-                break;
+            while (operationId != list.size()) {
+                var operationEntry = list.get(operationId);
+                ImplementCustomerToOperation(operationEntry.getKey(), operationId, operationEntry.getValue(), operations, customers, customer_operations_count, statement);
+                operationId++;
             }
-            scanner.nextLine();
-
-            String[] input = IOService.readTransactionInput();
-
-            if (input[2].equals("N")) {
-                break;
-            }
-
-            ImplementCustomerToOperation(operationId, sum, input[0], input[1], operations, MAX_OPERATION, customers,customer_operations_count,MAX_CUSTOMERS,statement);
-            operationId++;
-        }
-    }
-
-        private static void ImplementCustomerToOperation(int operationId, int sum, String currency, String merchant,
-                                                         StorageService<Operation> operations, int MAX_OPERATION,
-                                                         StorageService<Customer> customers, int[] customer_operations_count, int MAX_CUSTOMERS, int[][] statement) {
-        Scanner scanner = new Scanner(System.in);
-        if (operationId == MAX_OPERATION)
-        {
-            System.out.println("Transaction limit reached!");
-            throw new ArrayIndexOutOfBoundsException();
         }
 
-        Operation operation = new Operation(operationId, sum, currency, merchant);
+        private static void ImplementCustomerToOperation(int customerId, int operationId, Operation operation,
+                                                         StorageService<Operation> operations,
+                                                         StorageService<Customer> customers, int[] customer_operations_count, int[][] statement) {
+
+            if (operationId == MAX_OPERATION)
+            {
+                System.out.println("Transaction limit reached!");
+                throw new ArrayIndexOutOfBoundsException();
+            }
         operations.setElement(operationId, operation);
-
-        System.out.println("ID of the customer who owns the operation: ");
-        int customerId = scanner.nextInt();
-        scanner.nextLine();
-
-            customerId = IOService.CheckCustomerExistence(scanner, customers, customerId);
-            StatementService.updateStatement(operationId, MAX_OPERATION, customer_operations_count, MAX_CUSTOMERS, statement, customerId);
+        customerId = IOService.CheckCustomerExistence(customers, customerId);
+        StatementService.updateStatement(operationId, customer_operations_count, statement, customerId);
         }
 }

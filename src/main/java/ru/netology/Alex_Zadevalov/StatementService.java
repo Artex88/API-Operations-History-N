@@ -2,8 +2,11 @@ package ru.netology.Alex_Zadevalov;
 
 import ru.netology.Alex_Zadevalov.exception.CustomerOperationOutOfBoundException;
 
+import static ru.netology.Alex_Zadevalov.StorageService.MAX_CUSTOMERS;
+import static ru.netology.Alex_Zadevalov.StorageService.MAX_OPERATION;
+
 public class StatementService {
-    public static void updateStatement(int operationId, int MAX_OPERATION, int[] customer_operations_count, int MAX_CUSTOMERS, int[][] statement, int customerId) {
+    public static void updateStatement(int operationId, int[] customer_operations_count, int[][] statement, int customerId) {
         int operationCountForClient = customer_operations_count[customerId];
 
         if (operationCountForClient == MAX_OPERATION / MAX_CUSTOMERS)

@@ -1,36 +1,33 @@
 package test;
 import org.junit.Test;
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import ru.netology.Alex_Zadevalov.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class OperationServiceTest {
+    int MAX_OPERATION = 300;
+    int MAX_CUSTOMERS = 100;
 
     @Test
     public void testGetOperations() {
-        StorageService<Operation> mockOperations = new StorageService<>();
-        StorageService<Customer> mockCustomers = new StorageService<>();
-        // Подготавливаем данные для теста
-        int customerId = 1;
-        int[] customerOperationsCount = {2};
-        int[][] statement = {{0, 1}};
+        StorageService<Operation> mockOperations = new StorageService<>(MAX_OPERATION);
 
-        // Имитируем getElement для возвращения валидных операций
-        when(mockOperations.getElement(anyInt())).thenReturn(new Operation(0, 100, "USD", "Amazon"), new Operation(1, 150, "EUR", "eBay"));
+        mockOperations.setElement(new Operation(0,100,"USD", "AMAZON"));
+        mockOperations.setElement(new Operation(1,150,"RUB", "Diswork"));
+        int customerId = 0;
+        int[] customerOperationsCount = new int[] {2};
+        int[][] statement = new int[2][2];
+        statement[0][0] = 0;
+        statement[0][1] = 1;
 
-        // Вызываем метод getOperations
+
         Operation[] result = OperationService.getOperations(customerId, customerOperationsCount, mockOperations, statement);
 
-        // Проверяем, что метод getElement был вызван правильное количество раз
-        verify(mockOperations, times(2)).getElement(anyInt());
-
-        // Проверяем, что возвращенный массив операций соответствует ожиданиям
         assertEquals(2, result.length);
         assertEquals(100, result[0].getSum());
         assertEquals(150, result[1].getSum());
@@ -38,22 +35,25 @@ public class OperationServiceTest {
 
     @Test
     public void testInputOperation() {
-        // Подготавливаем ввод пользователя
-        StorageService<Operation> mockOperations = new StorageService<>();
-        StorageService<Customer> mockCustomers = new StorageService<>();
-        String input = "100\nUSD\nAmazon\nY\n";
-        InputStream in = new ByteArrayInputStream(input.getBytes());
 
+        StorageService<Operation> operations = new StorageService<>(MAX_OPERATION);
+        StorageService<Customer> customers = new StorageService<>(MAX_CUSTOMERS);
+        customers.setElement(0, new Customer(0, "John"));
+        int[] customer_operations_count = new int[1];
+        int[][] statement = new int[2][2];
 
-        // Вызываем метод inputOperation
-        OperationService.inputOperation(mockOperations, 5, mockCustomers, new int[]{2}, 3, new int[][]{{0, 1}});
+        List<Map.Entry<Integer, Operation>> list = new ArrayList<>();
+        list.add(Map.entry(0, new Operation(100,"USD", "Amazon")));
+        list.add(Map.entry(0,new Operation(100,"RUB", "WildBerries")));
 
-        // Проверяем, что методы setElement и updateStatement были вызваны правильное количество раз
-        verify(mockOperations, times(1)).setElement(anyInt(), any(Operation.class));
-        verify(mockCustomers, times(1)).getElement(anyInt());
-        verify(mockCustomers, times(1)).setElement(anyInt(), any(Customer.class));
+        OperationService.inputOperations(list, operations, customers, customer_operations_count, statement);
+
+        assertEquals(new Operation(100,"USD","Amazon"), operations.getElement(0));
+        assertEquals(new Operation(100,"RUB","WildBerries"), operations.getElement(1));
+        assertEquals(customer_operations_count[0], 2);
+        assertEquals(statement[0][0], 0);
+        assertEquals(statement[0][1], 1);
+
     }
-
-    // Тест ImplementCustomerToOperation может быть написан по аналогии с testInputOperation
 }
 

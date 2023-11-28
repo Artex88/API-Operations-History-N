@@ -8,8 +8,9 @@ import ru.netology.Alex_Zadevalov.StorageService;
 public class StorageServiceTest {
     @Test
     public void getCustomerTest() {
+        int MAX_OPERATION = 300;
 
-        StorageService<Operation> operationStorageService = new StorageService<>();
+        StorageService<Operation> operationStorageService = new StorageService<>(MAX_OPERATION);
         int sum = 100;
         String currency = "RUB";
         String merchant = "Shoko";

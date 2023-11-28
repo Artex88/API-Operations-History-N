@@ -1,36 +1,35 @@
 package ru.netology.Alex_Zadevalov;
 
-import java.util.Scanner;
+import java.util.List;
+
+import static ru.netology.Alex_Zadevalov.StorageService.MAX_CUSTOMERS;
 
 public class CustomerService {
-    public static void inputCustomer(Scanner scanner, int MAX_CUSTOMERS, StorageService<Customer> customers)
+    public static void inputCustomers(List<String> list, StorageService<Customer> customers)
     {
         int customersCount = 0;
         while (true)
         {
-            System.out.println("Customer name: ");
-            String name = scanner.nextLine();
+            String customerName;
+            if (list.size() <= customersCount)
+                 break;
+            else
+                customerName = list.get(customersCount);
 
-            System.out.println("Do you want to enter next Customer? Y/N");
-            String answer = scanner.nextLine();
-
-            if (answer.equals("N"))
+            if (customersCount == MAX_CUSTOMERS)
             {
-                break;
-            }
-            else if (customersCount == MAX_CUSTOMERS)
-            {
+                System.out.println("Достигнут лимит доступных пользователей");
                 break;
             }
 
-            if (customers.getElement(customersCount) != null)
+            if (customers.isIndexValid(customersCount))
             {
-                while (customers.getElement(customersCount) != null)
+                while (customers.isIndexValid(customersCount))
                     customersCount++;
-                Customer customer = new Customer(customersCount ,name);
+                Customer customer = new Customer(customersCount ,customerName);
                 customers.setElement(customersCount,customer);
             }
-            Customer customer = new Customer(customersCount ,name);
+            Customer customer = new Customer(customersCount ,customerName);
             customers.setElement(customersCount,customer);
             customersCount++;
         }

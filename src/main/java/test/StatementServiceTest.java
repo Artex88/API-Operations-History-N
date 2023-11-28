@@ -17,14 +17,14 @@ public class StatementServiceTest {
         int MAX_CUSTOMERS = 3;
         int[][] statement = new int[MAX_CUSTOMERS][MAX_OPERATION];
         int customerId = 0;
-        StatementService.updateStatement(operationId, MAX_OPERATION, customerOperationsCount, MAX_CUSTOMERS, statement, customerId);
+        StatementService.updateStatement(operationId, customerOperationsCount, statement, customerId);
         assertEquals(1, customerOperationsCount[customerId]);
         assertEquals(operationId, statement[customerId][0]);
         for (int i = 1; i < MAX_OPERATION / MAX_CUSTOMERS; i++) {
-            StatementService.updateStatement(++operationId, MAX_OPERATION, customerOperationsCount, MAX_CUSTOMERS, statement, customerId);
+            StatementService.updateStatement(++operationId, customerOperationsCount, statement, customerId);
         }
         try {
-            StatementService.updateStatement(++operationId, MAX_OPERATION, customerOperationsCount, MAX_CUSTOMERS, statement, customerId);
+            StatementService.updateStatement(++operationId, customerOperationsCount, statement, customerId);
             fail("Expected CustomerOperationOutOfBoundException was not thrown");
         } catch (RuntimeException e) {
             assertTrue(e.getCause() instanceof CustomerOperationOutOfBoundException);

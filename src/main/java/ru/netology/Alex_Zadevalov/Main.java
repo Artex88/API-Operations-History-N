@@ -1,23 +1,22 @@
 package ru.netology.Alex_Zadevalov;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
+import static ru.netology.Alex_Zadevalov.StorageService.MAX_CUSTOMERS;
+import static ru.netology.Alex_Zadevalov.StorageService.MAX_OPERATION;
+
 public class Main {
-    private final static int MAX_OPERATION = 300;
-    private final static int MAX_CUSTOMERS = 100;
-    static StorageService<Customer> customerStorageService = new StorageService<>();
-    static StorageService<Operation> operationStorageService = new StorageService<>();
+
+    static StorageService<Customer> customerStorageService = new StorageService<>(MAX_CUSTOMERS);
+    static StorageService<Operation> operationStorageService = new StorageService<>(MAX_OPERATION);
     private static final int[] customer_operations_count = new int[MAX_CUSTOMERS];
 
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        CustomerService.inputCustomer(scanner, MAX_CUSTOMERS, customerStorageService);
-        OperationService.inputOperation(operationStorageService, MAX_OPERATION, customerStorageService, customer_operations_count, MAX_CUSTOMERS, StorageService.getStatement());
+        CustomerService.inputCustomers(IOService.customerSystemInput(), customerStorageService);
+        OperationService.inputOperations(IOService.readTransactionInput(operationStorageService), operationStorageService, customerStorageService, customer_operations_count, StorageService.getStatement());
         IOService.CheckCustomerAllOperations(scanner, customer_operations_count, operationStorageService, StorageService.getStatement());
         IOService.getFinalOutput(customerStorageService, operationStorageService, StorageService.getStatement(), customer_operations_count);
     }
-
-
 }
